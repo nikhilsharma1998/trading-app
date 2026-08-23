@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/holdings/presentation/screens/portfolio_screen.dart';
 import '../../features/market/presentation/screens/market_overview_screen.dart';
+import '../../features/trading/domain/entities/order.dart';
+import '../../features/trading/presentation/screens/buy_sell_ticket_screen.dart';
 import '../../features/trading/presentation/screens/order_history_screen.dart';
 import '../../features/watchlist/presentation/screens/watchlist_screen.dart';
 
@@ -12,25 +14,30 @@ final bottomNavIndexProvider = StateProvider<int>((ref) => 0);
 class MainNavigationShell extends ConsumerWidget {
   const MainNavigationShell({super.key});
 
+  void _openTradingTicket(BuildContext context, String symbol, {OrderSide side = OrderSide.buy}) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => BuySellTicketScreen(
+          initialSymbol: symbol,
+          initialSide: side,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedIndex = ref.watch(bottomNavIndexProvider);
 
     final screens = [
       MarketOverviewScreen(
-        onStockSelected: (symbol) {
-          // Will navigate to Buy/Sell ticket in Phase 7
-        },
+        onStockSelected: (symbol) => _openTradingTicket(context, symbol),
       ),
       WatchlistScreen(
-        onStockSelected: (symbol) {
-          // Will navigate to Buy/Sell ticket in Phase 7
-        },
+        onStockSelected: (symbol) => _openTradingTicket(context, symbol),
       ),
       PortfolioScreen(
-        onStockSelected: (symbol) {
-          // Will navigate to Buy/Sell ticket in Phase 7
-        },
+        onStockSelected: (symbol) => _openTradingTicket(context, symbol, side: OrderSide.sell),
       ),
       const OrderHistoryScreen(),
     ];
