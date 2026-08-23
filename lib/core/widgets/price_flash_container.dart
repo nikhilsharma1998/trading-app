@@ -48,9 +48,11 @@ class _PriceFlashContainerState extends State<PriceFlashContainer>
     super.didUpdateWidget(oldWidget);
 
     if (widget.tick.currentPrice.paise != oldWidget.tick.currentPrice.paise) {
-      if (widget.tick.direction == PriceDirection.up) {
+      if (widget.tick.currentPrice.paise > oldWidget.tick.currentPrice.paise ||
+          widget.tick.direction == PriceDirection.up) {
         _triggerFlash(AppColors.greenFlash);
-      } else if (widget.tick.direction == PriceDirection.down) {
+      } else if (widget.tick.currentPrice.paise < oldWidget.tick.currentPrice.paise ||
+          widget.tick.direction == PriceDirection.down) {
         _triggerFlash(AppColors.redFlash);
       }
     }

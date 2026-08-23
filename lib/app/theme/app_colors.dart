@@ -13,10 +13,10 @@ class AppColors {
   // Market indicators
   static const Color green = Color(0xFF00C087);      // Bullish / Profit
   static const Color greenLight = Color(0x2600C087); // Subtle green highlight (15% opacity)
-  static const Color greenFlash = Color(0x3300C087); // Elegant 20% opacity for price cell flash
+  static const Color greenFlash = Color(0x4000C087); // Distinct 25% opacity for price cell flash
   static const Color red = Color(0xFFFF4D4F);        // Bearish / Loss
   static const Color redLight = Color(0x26FF4D4F);   // Subtle red highlight (15% opacity)
-  static const Color redFlash = Color(0x33FF4D4F);   // Elegant 20% opacity for price cell flash
+  static const Color redFlash = Color(0x40FF4D4F);   // Distinct 25% opacity for price cell flash
 
   // Brand & Accents
   static const Color primary = Color(0xFF2F80ED);
