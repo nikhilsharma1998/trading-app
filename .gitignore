@@ -12,7 +12,7 @@
 .swiftpm/
 migrate_working_dir/
 
-# Project assignment guidance and internal planning files
+#Internal files
 Project_guidence.txt
 Project_guidance.txt
 implementation_plan.md

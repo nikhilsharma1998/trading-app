@@ -7,7 +7,10 @@ plugins {
 android {
     namespace = "com.trading.trading_app"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+
+
+
+
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
