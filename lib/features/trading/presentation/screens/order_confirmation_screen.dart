@@ -162,33 +162,50 @@ class OrderConfirmationScreen extends ConsumerWidget {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Navigate to Orders Tab (index 3) and pop back to root shell
-                    ref.read(bottomNavIndexProvider.notifier).state = 3;
+                    // Navigate to Portfolio Tab (index 2)
+                    ref.read(bottomNavIndexProvider.notifier).state = 2;
                     Navigator.of(context).popUntil((route) => route.isFirst);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text('View Order History', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                  child: const Text('View Holdings / Portfolio', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
 
               SizedBox(
                 width: double.infinity,
                 height: 48,
                 child: OutlinedButton(
                   onPressed: () {
+                    // Navigate to Orders Tab (index 3)
+                    ref.read(bottomNavIndexProvider.notifier).state = 3;
                     Navigator.of(context).popUntil((route) => route.isFirst);
                   },
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: AppColors.border),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text('Done', style: TextStyle(fontSize: 15, color: AppColors.textPrimary)),
+                  child: const Text('View Order History', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
                 ),
               ),
+              const SizedBox(height: 10),
+
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: TextButton(
+                  onPressed: () {
+                    // Navigate to Market Tab (index 0)
+                    ref.read(bottomNavIndexProvider.notifier).state = 0;
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                  },
+                  child: const Text('Back to Market', style: TextStyle(fontSize: 14, color: AppColors.textSecondary)),
+                ),
+              ),
+
             ],
           ),
         ),

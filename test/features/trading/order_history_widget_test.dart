@@ -145,9 +145,10 @@ void main() {
 
       expect(find.text('Order Executed Successfully'), findsOneWidget);
       expect(find.text(StockConstants.reliance), findsOneWidget);
-      expect(find.text('10 shares'), findsWidgets);
+      expect(find.text('View Holdings / Portfolio'), findsOneWidget);
       expect(find.text('View Order History'), findsOneWidget);
-      expect(find.text('Done'), findsOneWidget);
+      expect(find.text('Back to Market'), findsOneWidget);
     });
+
   });
 }

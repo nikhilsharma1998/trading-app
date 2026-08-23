@@ -17,7 +17,8 @@ enum HoldingSortOption {
 }
 
 final holdingsSortOptionProvider =
-    StateProvider<HoldingSortOption>((ref) => HoldingSortOption.valueDesc);
+    StateProvider<HoldingSortOption>((ref) => HoldingSortOption.pnlDesc);
+
 
 /// Real-time aggregated Portfolio Summary computed continuously from live market ticks
 final portfolioSummaryProvider = Provider<PortfolioSummary>((ref) {
