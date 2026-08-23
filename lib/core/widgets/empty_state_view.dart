@@ -20,43 +20,43 @@ class EmptyStateView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
                 color: AppColors.surfaceElevated,
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.border),
               ),
-              child: Icon(icon, size: 48, color: AppColors.textSecondary),
+              child: Icon(icon, size: 42, color: AppColors.textSecondary),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             Text(
               title,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 18,
+                fontSize: 17,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
               description,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 13,
                 color: AppColors.textSecondary,
                 height: 1.4,
               ),
             ),
             if (actionLabel != null && onAction != null) ...[
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               ElevatedButton.icon(
                 onPressed: onAction,
                 icon: const Icon(Icons.add, size: 18),
