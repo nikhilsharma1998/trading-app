@@ -11,6 +11,8 @@ import '../../domain/entities/order.dart';
 import '../../domain/entities/trade_execution_result.dart';
 import '../providers/trading_provider.dart';
 import '../providers/wallet_provider.dart';
+import 'order_confirmation_screen.dart';
+
 
 class BuySellTicketScreen extends ConsumerStatefulWidget {
   final String initialSymbol;
@@ -135,9 +137,14 @@ class _BuySellTicketScreenState extends ConsumerState<BuySellTicketScreen> {
         if (widget.onOrderSuccess != null) {
           widget.onOrderSuccess!(result);
         } else {
-          Navigator.of(context).pop(result);
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (ctx) => OrderConfirmationScreen(result: result),
+            ),
+          );
         }
       }
+
     } catch (e) {
       if (mounted) {
         setState(() {
