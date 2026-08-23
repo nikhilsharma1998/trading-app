@@ -11,6 +11,13 @@ class TradingApp extends StatelessWidget {
       title: 'Simulated Stock Trading',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
+      builder: (context, child) {
+        return GestureDetector(
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          behavior: HitTestBehavior.translucent,
+          child: child,
+        );
+      },
       home: const MainNavigationShell(),
     );
   }

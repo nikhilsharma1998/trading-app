@@ -7,7 +7,7 @@ import '../../../../core/widgets/price_flash_container.dart';
 import '../providers/market_feed_provider.dart';
 
 /// Highly optimized stock tile subscribing strictly to its own symbol's price tick.
-/// Unrelated stock cells will NOT rebuild when this stock receives a price tick.
+/// Only the price badge flashes on ticks, keeping the rest of the row calm and rock-solid.
 class MarketStockTile extends ConsumerWidget {
   final String symbol;
   final VoidCallback? onTap;
@@ -26,50 +26,56 @@ class MarketStockTile extends ConsumerWidget {
     final isPositive = tick.change.paise >= 0;
     final changeColor = isPositive ? AppColors.green : AppColors.red;
 
-    return PriceFlashContainer(
-      tick: tick,
-      borderRadius: BorderRadius.circular(10),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(10),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Row(
-              children: [
-                // Stock Symbol & Company Name
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        symbol,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                          letterSpacing: 0.2,
-                        ),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: const BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: AppColors.border, width: 0.6),
+            ),
+          ),
+          child: Row(
+            children: [
+              // Stock Symbol & Company Name (Clean & static)
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      symbol,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                        letterSpacing: 0.2,
                       ),
-                      const SizedBox(height: 3),
-                      Text(
-                        companyName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textSecondary,
-                        ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      companyName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
+              ),
+              const SizedBox(width: 12),
 
-                // Live LTP & Change Statistics
-                Column(
+              // Localized Price Badge: ONLY this small cell flashes on price ticks
+              PriceFlashContainer(
+                tick: tick,
+                borderRadius: BorderRadius.circular(8),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       Formatters.formatCurrency(tick.currentPrice),
@@ -80,24 +86,29 @@ class MarketStockTile extends ConsumerWidget {
                         fontFeatures: [FontFeature.tabularFigures()],
                       ),
                     ),
-                    const SizedBox(height: 3),
+                    const SizedBox(height: 2),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        Icon(
+                          isPositive ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                          size: 14,
+                          color: changeColor,
+                        ),
                         Text(
                           Formatters.formatCurrency(tick.change, includeSign: true),
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 11,
                             fontWeight: FontWeight.w600,
                             color: changeColor,
                             fontFeatures: const [FontFeature.tabularFigures()],
                           ),
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: 3),
                         Text(
                           '(${Formatters.formatPercentage(tick.changePercentage, includeSign: true)})',
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 11,
                             fontWeight: FontWeight.w600,
                             color: changeColor,
                             fontFeatures: const [FontFeature.tabularFigures()],
@@ -107,8 +118,8 @@ class MarketStockTile extends ConsumerWidget {
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

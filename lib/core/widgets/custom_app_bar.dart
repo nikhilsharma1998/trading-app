@@ -21,7 +21,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   });
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 8);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 4);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,12 +31,22 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
       leading: leading,
       titleSpacing: 16,
       title: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Text(title),
+          Flexible(
+            child: Text(
+              title,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
           if (showLiveBadge) ...[
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
               decoration: BoxDecoration(
                 color: AppColors.greenLight,
                 borderRadius: BorderRadius.circular(20),
@@ -45,15 +55,15 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircleAvatar(radius: 3.5, backgroundColor: AppColors.green),
-                  SizedBox(width: 5),
+                  CircleAvatar(radius: 3, backgroundColor: AppColors.green),
+                  SizedBox(width: 4),
                   Text(
                     'LIVE',
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 9.5,
                       fontWeight: FontWeight.w800,
                       color: AppColors.green,
-                      letterSpacing: 0.8,
+                      letterSpacing: 0.6,
                     ),
                   ),
                 ],
@@ -65,13 +75,13 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
       actions: [
         if (showSpeedToggle) ...[
           Padding(
-            padding: const EdgeInsets.only(right: 8),
+            padding: const EdgeInsets.only(right: 6),
             child: ActionChip(
               avatar: Icon(
                 currentSpeed == MarketFeedSpeed.stress
                     ? Icons.bolt
                     : Icons.speed,
-                size: 16,
+                size: 15,
                 color: currentSpeed == MarketFeedSpeed.stress
                     ? AppColors.warning
                     : AppColors.textSecondary,
@@ -79,11 +89,11 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
               label: Text(
                 currentSpeed == MarketFeedSpeed.stress ? '5x Stress' : '1x Normal',
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 11,
                   fontWeight: FontWeight.w600,
                   color: currentSpeed == MarketFeedSpeed.stress
-                      ? AppColors.warning
-                      : AppColors.textPrimary,
+                    ? AppColors.warning
+                    : AppColors.textPrimary,
                 ),
               ),
               backgroundColor: currentSpeed == MarketFeedSpeed.stress
@@ -94,7 +104,8 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     ? AppColors.warning.withValues(alpha: 0.5)
                     : AppColors.border,
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              visualDensity: VisualDensity.compact,
               onPressed: () {
                 ref.read(marketFeedSpeedProvider.notifier).toggleSpeed();
               },
@@ -102,6 +113,8 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
           ),
         ],
         ...?actions,
+
+        const SizedBox(width: 8),
       ],
     );
   }

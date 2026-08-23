@@ -1,7 +1,8 @@
 # 📈 Real-Time High-Frequency Trading & Portfolio App
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
-[![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?logo=dart&logoColor=white)](https://dart.dev)
+[![Flutter](https://img.shields.io/badge/Flutter-3.47.1_stable-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-3.13.1-0175C2?logo=dart&logoColor=white)](https://dart.dev)
+
 [![Riverpod](https://img.shields.io/badge/State_Management-Riverpod_2.x-00C087?logoColor=white)](https://riverpod.dev)
 [![Storage](https://img.shields.io/badge/Persistence-Hive_CE-FF9800?logoColor=white)](https://pub.dev/packages/hive)
 [![Tests](https://img.shields.io/badge/Automated_Tests-43_Passed-00C087?logo=flutter)](https://flutter.dev)
@@ -169,10 +170,11 @@ lib/
 ## 🚀 Getting Started
 
 ### Prerequisites
-- **Flutter SDK**: `^3.19.0` or higher
-- **Dart SDK**: `^3.3.0` or higher
+- **Flutter SDK**: `3.47.1 (stable channel)` or higher
+- **Dart SDK**: `3.13.1` or higher
 - Android Studio / VS Code with Flutter extension
 - Android Device or Emulator
+
 
 
 ### Setup & Run

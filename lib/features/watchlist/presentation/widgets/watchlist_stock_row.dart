@@ -28,63 +28,69 @@ class WatchlistStockRow extends ConsumerWidget {
     final isPositive = tick.change.paise >= 0;
     final changeColor = isPositive ? AppColors.green : AppColors.red;
 
-    return PriceFlashContainer(
-      tick: tick,
-      borderRadius: BorderRadius.circular(10),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(10),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Row(
-              children: [
-                // Reorder drag icon
-                ReorderableDragStartListener(
-                  index: index,
-                  child: const Padding(
-                    padding: EdgeInsets.only(right: 12),
-                    child: Icon(
-                      Icons.drag_indicator,
-                      size: 20,
-                      color: AppColors.textMuted,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: const BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: AppColors.border, width: 0.6),
+            ),
+          ),
+          child: Row(
+            children: [
+              // Reorder drag icon
+              ReorderableDragStartListener(
+                index: index,
+                child: const Padding(
+                  padding: EdgeInsets.only(right: 12),
+                  child: Icon(
+                    Icons.drag_indicator,
+                    size: 20,
+                    color: AppColors.textMuted,
+                  ),
+                ),
+              ),
+
+              // Stock Symbol & Company Name (Clean & static)
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      symbol,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                        letterSpacing: 0.2,
+                      ),
                     ),
-                  ),
-                ),
-
-                // Stock Symbol & Company Name
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        symbol,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                          letterSpacing: 0.2,
-                        ),
+                    const SizedBox(height: 3),
+                    Text(
+                      companyName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
                       ),
-                      const SizedBox(height: 3),
-                      Text(
-                        companyName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
+              ),
+              const SizedBox(width: 12),
 
-                // Live LTP & Statistics
-                Column(
+              // Localized Price Badge: ONLY this small cell flashes on price ticks
+              PriceFlashContainer(
+                tick: tick,
+                borderRadius: BorderRadius.circular(8),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       Formatters.formatCurrency(tick.currentPrice),
@@ -95,24 +101,29 @@ class WatchlistStockRow extends ConsumerWidget {
                         fontFeatures: [FontFeature.tabularFigures()],
                       ),
                     ),
-                    const SizedBox(height: 3),
+                    const SizedBox(height: 2),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        Icon(
+                          isPositive ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                          size: 14,
+                          color: changeColor,
+                        ),
                         Text(
                           Formatters.formatCurrency(tick.change, includeSign: true),
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 11,
                             fontWeight: FontWeight.w600,
                             color: changeColor,
                             fontFeatures: const [FontFeature.tabularFigures()],
                           ),
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: 3),
                         Text(
                           '(${Formatters.formatPercentage(tick.changePercentage, includeSign: true)})',
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 11,
                             fontWeight: FontWeight.w600,
                             color: changeColor,
                             fontFeatures: const [FontFeature.tabularFigures()],
@@ -122,18 +133,21 @@ class WatchlistStockRow extends ConsumerWidget {
                     ),
                   ],
                 ),
+              ),
 
-                if (onRemove != null) ...[
-                  const SizedBox(width: 8),
-                  IconButton(
-                    icon: const Icon(Icons.remove_circle_outline, size: 20, color: AppColors.textMuted),
-                    onPressed: onRemove,
-                    visualDensity: VisualDensity.compact,
-                    tooltip: 'Remove from watchlist',
-                  ),
-                ],
+              // Remove button
+              if (onRemove != null) ...[
+                const SizedBox(width: 4),
+                IconButton(
+                  icon: const Icon(Icons.close, size: 16, color: AppColors.textMuted),
+                  tooltip: 'Remove from Watchlist',
+                  onPressed: onRemove,
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                ),
               ],
-            ),
+            ],
           ),
         ),
       ),
