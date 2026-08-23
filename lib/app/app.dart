@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'router/app_router.dart';
+import 'theme/app_theme.dart';
 
 class TradingApp extends StatelessWidget {
   const TradingApp({super.key});
@@ -6,21 +8,10 @@ class TradingApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Trading App',
+      title: 'Simulated Stock Trading',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF00C087),
-          brightness: Brightness.dark,
-        ),
-      ),
-      home: const Scaffold(
-        body: Center(
-          child: Text('Trading App Initialized'),
-        ),
-      ),
+      theme: AppTheme.darkTheme,
+      home: const MainNavigationShell(),
     );
   }
 }
-
