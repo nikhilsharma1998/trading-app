@@ -78,11 +78,11 @@ final marketPriceStoreProvider =
   return MarketPriceStoreNotifier(repository);
 });
 
-/// Granular Family Provider for a single stock's latest MarketTick.
-/// Only widgets subscribed to this symbol will rebuild on tick.
+/// High-Performance Granular Family Provider for a single stock's latest MarketTick.
+/// Uses .select() so widgets subscribed to 'RELIANCE' will NOT rebuild when 'TCS' ticks.
 final stockTickProvider = Provider.family<MarketTick, String>((ref, symbol) {
-  final store = ref.watch(marketPriceStoreProvider);
-  return store[symbol] ??
+  final tick = ref.watch(marketPriceStoreProvider.select((store) => store[symbol]));
+  return tick ??
       MarketTick.initial(
         symbol: symbol,
         initialPrice: StockConstants.startingPrices[symbol] ?? const Money(100000),

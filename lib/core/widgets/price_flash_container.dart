@@ -4,6 +4,7 @@ import '../../features/market/data/models/market_tick.dart';
 
 /// Lightweight container that flashes a subtle green or red tint on price tick
 /// and smoothly fades back to transparent without rebuilding its parent or child.
+/// Isolated inside a RepaintBoundary to prevent repaint invalidations on surrounding elements.
 class PriceFlashContainer extends StatefulWidget {
   final MarketTick tick;
   final Widget child;
@@ -73,19 +74,21 @@ class _PriceFlashContainerState extends State<PriceFlashContainer>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Container(
-          padding: widget.padding,
-          decoration: BoxDecoration(
-            color: _colorAnimation.value ?? Colors.transparent,
-            borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
-          ),
-          child: child,
-        );
-      },
-      child: widget.child,
+    return RepaintBoundary(
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          return Container(
+            padding: widget.padding,
+            decoration: BoxDecoration(
+              color: _colorAnimation.value ?? Colors.transparent,
+              borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
+            ),
+            child: child,
+          );
+        },
+        child: widget.child,
+      ),
     );
   }
 }
