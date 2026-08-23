@@ -172,7 +172,8 @@ lib/
 - **Flutter SDK**: `^3.19.0` or higher
 - **Dart SDK**: `^3.3.0` or higher
 - Android Studio / VS Code with Flutter extension
-- Android Device or Emulator / iOS Simulator / Desktop / Web
+- Android Device or Emulator
+
 
 ### Setup & Run
 1. **Clone the repository**:

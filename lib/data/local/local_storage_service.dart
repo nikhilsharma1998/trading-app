@@ -18,17 +18,26 @@ class HiveLocalStorageService implements LocalStorageService {
   Future<void> init() async {
     try {
       await Hive.initFlutter();
-      _box = await Hive.openBox(LocalStorageKeys.appBox);
+      if (Hive.isBoxOpen(LocalStorageKeys.appBox)) {
+        _box = Hive.box(LocalStorageKeys.appBox);
+      } else {
+        _box = await Hive.openBox(LocalStorageKeys.appBox);
+      }
     } catch (e) {
       throw StorageException('Failed to initialize Hive local storage: $e');
     }
   }
 
   Box get _activeBox {
-    if (_box == null || !_box!.isOpen) {
-      throw const StorageException('Storage box is not initialized or closed');
+    if (_box != null && _box!.isOpen) {
+      return _box!;
     }
-    return _box!;
+    // Attempt re-attach if box is already opened in Hive
+    if (Hive.isBoxOpen(LocalStorageKeys.appBox)) {
+      _box = Hive.box(LocalStorageKeys.appBox);
+      return _box!;
+    }
+    throw const StorageException('Storage box is not initialized or closed');
   }
 
   @override
@@ -102,11 +111,7 @@ class InMemoryLocalStorageService implements LocalStorageService {
 
   @override
   Future<void> put(String key, dynamic value) async {
-    if (value is Map || value is List) {
-      _storage[key] = jsonEncode(value);
-    } else {
-      _storage[key] = value;
-    }
+    _storage[key] = value;
   }
 
   @override
