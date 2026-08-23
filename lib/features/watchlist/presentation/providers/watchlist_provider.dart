@@ -16,27 +16,33 @@ class WatchlistNotifier extends StateNotifier<AsyncValue<List<Watchlist>>> {
 
   Future<void> loadWatchlists() async {
     try {
-      state = const AsyncValue.loading();
       final watchlists = await _repository.getWatchlists();
       state = AsyncValue.data(watchlists);
 
-      // Restore active watchlist ID
-      final activeId = await _repository.getActiveWatchlistId();
-      if (activeId != null && watchlists.any((w) => w.id == activeId)) {
-        _ref.read(activeWatchlistIdProvider.notifier).state = activeId;
-      } else if (watchlists.isNotEmpty) {
-        _ref.read(activeWatchlistIdProvider.notifier).state = watchlists.first.id;
+      // On app launch / restart, default to the primary first watchlist (Nifty 50 Leaders)
+      final currentActiveId = _ref.read(activeWatchlistIdProvider);
+      if (currentActiveId.isEmpty || !watchlists.any((w) => w.id == currentActiveId)) {
+        if (watchlists.isNotEmpty) {
+          _ref.read(activeWatchlistIdProvider.notifier).state = watchlists.first.id;
+        }
       }
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
   }
 
+  Future<List<Watchlist>> _getCurrentList() async {
+    if (state.hasValue && state.value != null && state.value!.isNotEmpty) {
+      return state.value!;
+    }
+    return await _repository.getWatchlists();
+  }
+
   Future<void> createWatchlist(String name) async {
     final trimmed = name.trim();
     if (trimmed.isEmpty) return;
 
-    final currentList = state.value ?? [];
+    final currentList = await _getCurrentList();
     final newWatchlist = Watchlist(
       id: const Uuid().v4(),
       name: trimmed,
@@ -56,7 +62,7 @@ class WatchlistNotifier extends StateNotifier<AsyncValue<List<Watchlist>>> {
     final trimmed = newName.trim();
     if (trimmed.isEmpty) return;
 
-    final currentList = state.value ?? [];
+    final currentList = await _getCurrentList();
     final updated = currentList.map((w) {
       if (w.id == id) {
         return w.copyWith(name: trimmed);
@@ -69,7 +75,7 @@ class WatchlistNotifier extends StateNotifier<AsyncValue<List<Watchlist>>> {
   }
 
   Future<void> deleteWatchlist(String id) async {
-    final currentList = state.value ?? [];
+    final currentList = await _getCurrentList();
     if (currentList.length <= 1) {
       // Must maintain at least one watchlist
       return;
@@ -87,7 +93,7 @@ class WatchlistNotifier extends StateNotifier<AsyncValue<List<Watchlist>>> {
   }
 
   Future<bool> addStockToWatchlist(String watchlistId, String symbol) async {
-    final currentList = state.value ?? [];
+    final currentList = await _getCurrentList();
     final watchlistIndex = currentList.indexWhere((w) => w.id == watchlistId);
     if (watchlistIndex == -1) return false;
 
@@ -108,7 +114,7 @@ class WatchlistNotifier extends StateNotifier<AsyncValue<List<Watchlist>>> {
   }
 
   Future<void> removeStockFromWatchlist(String watchlistId, String symbol) async {
-    final currentList = state.value ?? [];
+    final currentList = await _getCurrentList();
     final watchlistIndex = currentList.indexWhere((w) => w.id == watchlistId);
     if (watchlistIndex == -1) return;
 
@@ -124,7 +130,7 @@ class WatchlistNotifier extends StateNotifier<AsyncValue<List<Watchlist>>> {
   }
 
   Future<void> reorderStocks(String watchlistId, int oldIndex, int newIndex) async {
-    final currentList = state.value ?? [];
+    final currentList = await _getCurrentList();
     final watchlistIndex = currentList.indexWhere((w) => w.id == watchlistId);
     if (watchlistIndex == -1) return;
 
@@ -172,4 +178,3 @@ final activeWatchlistProvider = Provider<Watchlist?>((ref) {
     error: (err, st) => null,
   );
 });
-

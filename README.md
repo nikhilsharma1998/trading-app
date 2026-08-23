@@ -25,7 +25,7 @@ A production-grade, real-time simulated stock trading application built with **F
 
 ### 2. 📋 Watchlist Management & Reordering
 - **Multiple Watchlists**: Create, rename, delete, and switch between customizable watchlists with persistent state across restarts.
-- **Stock Picker**: Bottom sheet with search filter to add any of the 10 instruments (`RELIANCE`, `TCS`, `INFY`, `HDFCBANK`, `ICICIBANK`, `BHARTIARTL`, `SBIN`, `ITC`, `LT`, `TATAMOTORS`).
+- **Stock Picker**: Bottom sheet with search filter to add any of the 10 instruments (`RELIANCE`, `TCS`, `INFY`, `HDFCBANK`, `ICICIBANK`, `BHARTIARTL`, `SBIN`, `ITC`, `LT`, `AXISBANK`).
 - **Drag-and-Drop Reordering**: Smooth drag reordering powered by `ReorderableListView.builder` with symbol-based `ValueKey` bindings.
 - **Duplicate Protection**: Strict validation preventing duplicate symbols within the same watchlist.
 
@@ -201,12 +201,32 @@ lib/
    ```
    *(Runs all 43 unit, widget, performance, and integration tests)*
 
-5. **Launch Application**:
+5. **Launch Application in Debug / Profile**:
    ```bash
    flutter run
    ```
 
+6. **Build Production Release APK**:
+   ```bash
+   flutter build apk --release
+   ```
+   *(Generates optimized release binary at `build/app/outputs/flutter-apk/app-release.apk`)*
+
 ---
+
+### 📲 Direct APK Installation (For Reviewers & Testing)
+
+A pre-built, production-ready release APK is provided in the repository:
+
+- **File Path**: [`apk/app-release.apk`](apk/app-release.apk)
+- **Install on Device via ADB**:
+  ```bash
+  adb install apk/app-release.apk
+  ```
+- **Direct Sideload**: Transfer `apk/app-release.apk` directly to an Android phone/emulator and tap to install.
+
+---
+
 
 ## 🧪 Comprehensive Automated Testing Strategy
 

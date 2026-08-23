@@ -75,9 +75,9 @@ void main() {
       expect(restoredWl.name, equals('Bluechip Giants'));
       expect(restoredWl.symbols, equals([StockConstants.infy, StockConstants.reliance, StockConstants.tcs]));
 
-      // Verify active watchlist restored
+      // Verify active watchlist on fresh restart defaults to primary first watchlist (Nifty 50 Leaders)
       final activeId = container2.read(activeWatchlistIdProvider);
-      expect(activeId, equals(customWlId));
+      expect(activeId, equals(list2.first.id));
 
       container2.dispose();
     });

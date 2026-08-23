@@ -383,14 +383,17 @@ class _BuySellTicketScreenState extends ConsumerState<BuySellTicketScreen> {
                     letterSpacing: 0.5,
                   ),
                 ),
-                Text(
-                  isBuy
-                      ? 'Available Balance: ${availableBalance.format()}'
-                      : 'Available Shares: $availableHoldingQty',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
+                Flexible(
+                  child: Text(
+                    isBuy
+                        ? 'Available Balance: ${availableBalance.format()}'
+                        : 'Available Shares: $availableHoldingQty',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primary,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -471,27 +474,34 @@ class _BuySellTicketScreenState extends ConsumerState<BuySellTicketScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Projected Order Value',
-                        style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
-                      ),
-                      SizedBox(height: 3),
-                      Text(
-                        'Executed at immediate live LTP',
-                        style: TextStyle(fontSize: 11, color: AppColors.textMuted),
-                      ),
-                    ],
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Projected Order Value',
+                          style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                        ),
+                        SizedBox(height: 3),
+                        Text(
+                          'Executed at immediate live LTP',
+                          style: TextStyle(fontSize: 11, color: AppColors.textMuted),
+                        ),
+                      ],
+                    ),
                   ),
-                  Text(
-                    Formatters.formatCurrency(projectedOrderValue),
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
-                      fontFeatures: [FontFeature.tabularFigures()],
+                  const SizedBox(width: 8),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      Formatters.formatCurrency(projectedOrderValue),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.textPrimary,
+                        fontFeatures: [FontFeature.tabularFigures()],
+                      ),
                     ),
                   ),
                 ],

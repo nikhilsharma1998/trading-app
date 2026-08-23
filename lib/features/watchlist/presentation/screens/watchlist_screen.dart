@@ -64,37 +64,96 @@ class WatchlistScreen extends ConsumerWidget {
     final watchlistsAsync = ref.watch(watchlistNotifierProvider);
     final activeId = ref.watch(activeWatchlistIdProvider);
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Watchlists',
-        showLiveBadge: true,
-        showSpeedToggle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add_box_outlined, color: AppColors.primary),
-            tooltip: 'Create Watchlist',
-            onPressed: () => _showCreateDialog(context, ref),
-          ),
-        ],
-      ),
-      body: watchlistsAsync.when(
-        data: (watchlists) {
-          if (watchlists.isEmpty) {
-            return EmptyStateView(
+    return watchlistsAsync.when(
+      data: (watchlists) {
+        if (watchlists.isEmpty) {
+          return Scaffold(
+            appBar: CustomAppBar(
+              title: 'Watchlists',
+              showLiveBadge: true,
+              showSpeedToggle: true,
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.add_box_outlined, color: AppColors.primary),
+                  tooltip: 'Create Watchlist',
+                  onPressed: () => _showCreateDialog(context, ref),
+                ),
+              ],
+            ),
+            body: EmptyStateView(
               icon: Icons.format_list_bulleted,
               title: 'No watchlists found',
               description: 'Create a watchlist to start monitoring your selected stocks.',
               actionLabel: 'Create Watchlist',
               onAction: () => _showCreateDialog(context, ref),
-            );
-          }
-
-          final activeWatchlist = watchlists.firstWhere(
-            (w) => w.id == activeId,
-            orElse: () => watchlists.first,
+            ),
           );
+        }
 
-          return Column(
+        final activeWatchlist = watchlists.firstWhere(
+          (w) => w.id == activeId,
+          orElse: () => watchlists.first,
+        );
+
+        return Scaffold(
+          appBar: CustomAppBar(
+            title: 'Watchlists',
+            showLiveBadge: true,
+            showSpeedToggle: true,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.add_box_outlined, color: AppColors.primary),
+                tooltip: 'Create Watchlist',
+                onPressed: () => _showCreateDialog(context, ref),
+              ),
+              PopupMenuButton<String>(
+                icon: const Icon(Icons.more_vert, color: AppColors.textSecondary),
+                tooltip: 'Watchlist Options',
+                color: AppColors.surfaceElevated,
+                onSelected: (value) {
+                  if (value == 'manage') {
+                    _showEditDialog(
+                      context,
+                      ref,
+                      activeWatchlist,
+                      watchlists.length > 1,
+                    );
+                  } else if (value == 'new') {
+                    _showCreateDialog(context, ref);
+                  }
+                },
+                itemBuilder: (ctx) => [
+                  PopupMenuItem(
+                    value: 'manage',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.edit_outlined, size: 18, color: AppColors.textPrimary),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Edit "${activeWatchlist.name}"',
+                            style: const TextStyle(color: AppColors.textPrimary),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuItem(
+                    value: 'new',
+                    child: Row(
+                      children: [
+                        Icon(Icons.add, size: 18, color: AppColors.primary),
+                        SizedBox(width: 8),
+                        Text('Create New Watchlist', style: TextStyle(color: AppColors.primary)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          body: Column(
             children: [
               // Watchlist selector tabs
               Container(
@@ -130,77 +189,162 @@ class WatchlistScreen extends ConsumerWidget {
 
                     return Padding(
                       padding: const EdgeInsets.only(right: 8),
-                      child: FilterChip(
-                        selected: isSelected,
-                        showCheckmark: false,
-                        label: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              wl.name,
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                                color: isSelected ? Colors.white : AppColors.textSecondary,
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(20),
+                          onTap: () {
+                            if (isSelected) {
+                              _showEditDialog(
+                                context,
+                                ref,
+                                wl,
+                                watchlists.length > 1,
+                              );
+                            } else {
+                              ref.read(activeWatchlistIdProvider.notifier).state = wl.id;
+                            }
+                          },
+                          onLongPress: () {
+                            _showEditDialog(
+                              context,
+                              ref,
+                              wl,
+                              watchlists.length > 1,
+                            );
+                          },
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            padding: EdgeInsets.only(
+                              left: 14,
+                              right: isSelected ? 4 : 14,
+                              top: 6,
+                              bottom: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isSelected ? AppColors.primary : AppColors.surfaceElevated,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: isSelected ? AppColors.primary : AppColors.border,
+                                width: 1,
                               ),
                             ),
-                            if (isSelected) ...[
-                              const SizedBox(width: 4),
-                              GestureDetector(
-                                onTap: () => _showEditDialog(
-                                  context,
-                                  ref,
-                                  wl,
-                                  watchlists.length > 1,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ConstrainedBox(
+                                  constraints: const BoxConstraints(maxWidth: 160),
+                                  child: Text(
+                                    wl.name,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                                      color: isSelected ? Colors.white : AppColors.textSecondary,
+                                    ),
+                                  ),
                                 ),
-                                child: const Icon(Icons.more_vert, size: 16, color: Colors.white70),
-                              ),
-                            ],
-                          ],
+                                if (isSelected) ...[
+                                  const SizedBox(width: 2),
+                                  InkResponse(
+                                    radius: 16,
+                                    onTap: () => _showEditDialog(
+                                      context,
+                                      ref,
+                                      wl,
+                                      watchlists.length > 1,
+                                    ),
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(4.0),
+                                      child: Icon(
+                                        Icons.more_vert,
+                                        size: 16,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
                         ),
-                        selectedColor: AppColors.primary,
-                        backgroundColor: AppColors.surfaceElevated,
-                        side: BorderSide(
-                          color: isSelected ? AppColors.primary : AppColors.border,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        onSelected: (selected) {
-                          ref.read(activeWatchlistIdProvider.notifier).state = wl.id;
-                        },
                       ),
                     );
                   },
                 ),
               ),
 
-              // Active Watchlist Summary Header
+              // Active Watchlist Summary & Action Header
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 color: AppColors.background,
                 child: Row(
                   children: [
-                    Text(
-                      '${activeWatchlist.symbols.length} STOCKS',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textMuted,
-                        letterSpacing: 0.5,
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              activeWatchlist.name,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textPrimary,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: AppColors.surfaceElevated,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: AppColors.border),
+                            ),
+                            child: Text(
+                              '${activeWatchlist.symbols.length} STOCKS',
+                              style: const TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textSecondary,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const Spacer(),
-                    TextButton.icon(
+                    // Dedicated Edit / Rename / Delete button
+                    IconButton(
+                      icon: const Icon(Icons.edit_outlined, size: 18, color: AppColors.textSecondary),
+                      tooltip: 'Rename or Delete Watchlist',
+                      visualDensity: VisualDensity.compact,
+                      onPressed: () => _showEditDialog(
+                        context,
+                        ref,
+                        activeWatchlist,
+                        watchlists.length > 1,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    // Add Stock button
+                    ElevatedButton.icon(
                       onPressed: () => _showStockPicker(context, ref, activeWatchlist),
-                      icon: const Icon(Icons.add, size: 16, color: AppColors.primary),
+                      icon: const Icon(Icons.add, size: 16),
                       label: const Text(
                         'Add Stock',
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.primary),
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                       ),
-                      style: TextButton.styleFrom(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
                         visualDensity: VisualDensity.compact,
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                       ),
                     ),
                   ],
@@ -229,7 +373,6 @@ class WatchlistScreen extends ConsumerWidget {
                                 newIndex,
                               );
                         },
-
                         itemBuilder: (context, index) {
                           final symbol = activeWatchlist.symbols[index];
                           // Critical: Key based on stock symbol prevents stale binding during reordering
@@ -253,12 +396,16 @@ class WatchlistScreen extends ConsumerWidget {
                       ),
               ),
             ],
-          );
-        },
-        loading: () => const Center(
-          child: CircularProgressIndicator(),
-        ),
-        error: (err, _) => Center(
+          ),
+        );
+      },
+      loading: () => Scaffold(
+        appBar: const CustomAppBar(title: 'Watchlists', showLiveBadge: true, showSpeedToggle: true),
+        body: const Center(child: CircularProgressIndicator()),
+      ),
+      error: (err, _) => Scaffold(
+        appBar: const CustomAppBar(title: 'Watchlists', showLiveBadge: true, showSpeedToggle: true),
+        body: Center(
           child: Text(
             'Failed to load watchlists: $err',
             style: const TextStyle(color: AppColors.red),

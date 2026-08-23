@@ -113,8 +113,8 @@ void main() {
       // Check App bar
       expect(find.text('Watchlists'), findsOneWidget);
 
-      // Check tab chip
-      expect(find.text('Nifty 50 Leaders'), findsOneWidget);
+      // Check tab chip & active title
+      expect(find.text('Nifty 50 Leaders'), findsWidgets);
 
       // Check stock row
       expect(find.byKey(const ValueKey('wl_watchlist_default_RELIANCE')), findsOneWidget);
